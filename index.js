@@ -106,14 +106,18 @@ Blake2b.WASM = wasm && wasm.buffer
 Blake2b.SUPPORTED = typeof WebAssembly !== 'undefined'
 
 Blake2b.ready = function (cb) {
-  if (!cb) cb = noop
   if (!wasm) return cb(new Error('WebAssembly not supported'))
 
+  if (cb) {
+    wasm.onload(cb)
+    return
+  }
+
   // backwards compat, can be removed in a new major
-  var p = new Promise(function (reject, resolve) {
+  var p = new Promise(function (resolve, reject) {
     wasm.onload(function (err) {
-      if (err) resolve()
-      else reject()
+      if (err) reject(err)
+      else resolve()
       cb(err)
     })
   })

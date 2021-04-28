@@ -83,3 +83,14 @@ tape('.ready()', function (t) {
       t.end()
     })
 });
+
+test('pass error argument if ready callback fail', t => {
+  const wasm = blake2b({
+    imports: null // importing null will generate an error
+  })
+
+  wasm.onload(err => {
+    t.ok(err)
+    t.end()
+  })
+})
